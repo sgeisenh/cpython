@@ -4611,6 +4611,54 @@ class TestPythonBufferProtocol(unittest.TestCase):
             self.assertFalse(m.readonly)
         self.assertRaises(BufferError, _testcapi.buffer_fill_info,
                           source, 1, PyBUF_WRITABLE)
+        
+    @unittest.skipIf(_testcapi is None, "requires _testcapi")
+    def test_c_owned_buffer_memoryview(self):
+        buf = _testcapi.testOwnedBuf()
+        self.assertRaises(BufferError, memoryview, buf)
+
+    @unittest.skipIf(_testcapi is None, "requires _testcapi")
+    def test_c_owned_buffer_immutable_view(self):
+        buf = _testcapi.testOwnedBuf()
+        view1 = _testcapi.testSimpleImmutableView(buf)
+        view2 = _testcapi.testSimpleImmutableView(buf)
+        self.assertEqual(view1.__bytes__(), b"\0" * 1000)
+        self.assertEqual(view2.__bytes__(), b"\0" * 1000)
+
+    @unittest.skipIf(_testcapi is None, "requires _testcapi")
+    def test_c_owned_buffer_immutable_view(self):
+        value = b"test"
+        view = _testcapi.testSimpleImmutableView(value)
+        self.assertEqual(view.__bytes__(), value)
+
+    @unittest.skipIf(_testcapi is None, "requires _testcapi")
+    def test_c_owned_buffer_exclusive_view(self):
+        buf = _testcapi.testOwnedBuf()
+        view = _testcapi.testSimpleMutableView(buf)
+        payload = b"hello"
+        for idx, c in enumerate(payload):
+            view.__setitem__(idx, c)
+        self.assertEqual(view.__bytes__()[:len(payload)], payload)
+
+    @unittest.skipIf(_testcapi is None, "requires _testcapi")
+    def test_c_owned_buffer_exclusive_conflicting_view(self):
+        buf = _testcapi.testOwnedBuf()
+        view = _testcapi.testSimpleMutableView(buf)
+        self.assertRaises(BufferError, _testcapi.testSimpleImmutableView, buf)
+
+    @unittest.skipIf(_testcapi is None, "requires _testcapi")
+    def test_c_owned_buffer_exclusive_conflicting_view(self):
+        buf = _testcapi.testOwnedBuf()
+        view1 = _testcapi.testSimpleMutableView(buf)
+        view1.__setitem__(0, ord("a"))
+        del view1
+        view2 = _testcapi.testSimpleImmutableView(buf)
+        self.assertEqual(view2.__bytes__(), b"a" + b"\0" * 999)
+
+    @unittest.skipIf(_testcapi is None, "requires _testcapi")
+    def test_c_owned_buffer_exclusive_bytes_fails(self):
+        buf = b"hello"
+        self.assertRaises(BufferError, _testcapi.testSimpleMutableView, buf)
 
     def test_inheritance(self):
         class A(bytearray):

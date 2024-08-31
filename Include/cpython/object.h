@@ -136,6 +136,7 @@ typedef struct {
 typedef struct {
      getbufferproc bf_getbuffer;
      releasebufferproc bf_releasebuffer;
+     uint32_t potential_pybuf_flags;
 } PyBufferProcs;
 
 /* Allow printfunc in the tp_vectorcall_offset slot for

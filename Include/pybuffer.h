@@ -137,6 +137,11 @@ PyAPI_FUNC(void) PyBuffer_Release(Py_buffer *view);
 #define PyBUF_READ  0x100
 #define PyBUF_WRITE 0x200
 
+#define PyBUF_OPT_OUT (PyBUF_FULL | PyBUF_READ | PyBUF_WRITE | PyBUF_C_CONTIGUOUS | PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS)
+
+#define PyBUF_IMMUTABLE 0x400
+#define PyBUF_EXCLUSIVE 0x800
+
 #endif /* !Py_LIMITED_API || Py_LIMITED_API >= 3.11 */
 
 #ifdef __cplusplus
