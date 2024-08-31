@@ -4637,7 +4637,7 @@ class TestPythonBufferProtocol(unittest.TestCase):
         view = _testcapi.testSimpleMutableView(buf)
         payload = b"hello"
         for idx, c in enumerate(payload):
-            view.__setitem__(idx, c)
+            view[idx] = c
         self.assertEqual(view.__bytes__()[:len(payload)], payload)
 
     @unittest.skipIf(_testcapi is None, "requires _testcapi")
@@ -4650,7 +4650,7 @@ class TestPythonBufferProtocol(unittest.TestCase):
     def test_c_owned_buffer_exclusive_conflicting_view(self):
         buf = _testcapi.testOwnedBuf()
         view1 = _testcapi.testSimpleMutableView(buf)
-        view1.__setitem__(0, ord("a"))
+        view1[0] = ord("a")
         del view1
         view2 = _testcapi.testSimpleImmutableView(buf)
         self.assertEqual(view2.__bytes__(), b"a" + b"\0" * 999)

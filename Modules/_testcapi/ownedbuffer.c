@@ -204,23 +204,20 @@ testSimpleMutableViewObject___bytes__(testSimpleMutableViewObject *self)
     return PyBytes_FromStringAndSize(self->view.buf, self->view.len);
 }
 
-static PyObject *
-testSimpleMutableViewObject___setitem__(testSimpleMutableViewObject *self, PyObject *args)
+static int
+testSimpleMutableViewObject_ass_subscript(testSimpleMutableViewObject *self, PyObject *key, PyObject *value)
 {
-    Py_ssize_t index;
-    char value;
-    if (!PyArg_ParseTuple(args, "nB", &index, &value)) {
-        return NULL;
-    }
+    Py_ssize_t index = PyLong_AsSsize_t(key);
+    char number = (char)PyLong_AsLong(value);
 
     if (index < 0 || index >= self->view.len) {
         PyErr_SetString(PyExc_IndexError, "index out of range");
-        return NULL;
+        return -1;
     }
 
     char* buf = (char *)self->view.buf;
-    buf[index] = value;
-    Py_RETURN_NONE;
+    buf[index] = number;
+    return 0;
 }
 
 static PyTypeObject testSimpleMutableViewType;
@@ -269,8 +266,13 @@ testSimpleMutableViewObject_dealloc(testSimpleMutableViewObject *self)
 
 static PyMethodDef testSimpleMutableView_methods[] = {
     {"__bytes__", (PyCFunction) testSimpleMutableViewObject___bytes__, METH_NOARGS},
-    {"__setitem__", (PyCFunction) testSimpleMutableViewObject___setitem__, METH_VARARGS},
     {NULL},
+};
+
+static PyMappingMethods testSimpleMutableView_as_mapping = {
+    .mp_length = NULL,
+    .mp_subscript = NULL,
+    .mp_ass_subscript = (objobjargproc)testSimpleMutableViewObject_ass_subscript,
 };
 
 static PyTypeObject testSimpleMutableViewType = {
@@ -278,6 +280,7 @@ static PyTypeObject testSimpleMutableViewType = {
     .tp_name = "testSimpleMutableViewType",
     .tp_basicsize = sizeof(testSimpleMutableViewObject),
     .tp_methods = testSimpleMutableView_methods,
+    .tp_as_mapping = &testSimpleMutableView_as_mapping,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = testSimpleMutableViewObject_new,
     .tp_dealloc = (destructor) testSimpleMutableViewObject_dealloc,
