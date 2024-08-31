@@ -4622,14 +4622,14 @@ class TestPythonBufferProtocol(unittest.TestCase):
         buf = _testcapi.testOwnedBuf()
         view1 = _testcapi.testSimpleImmutableView(buf)
         view2 = _testcapi.testSimpleImmutableView(buf)
-        self.assertEqual(view1.__bytes__(), b"\0" * 1000)
-        self.assertEqual(view2.__bytes__(), b"\0" * 1000)
+        self.assertEqual(bytes(view1), b"\0" * 1000)
+        self.assertEqual(bytes(view2), b"\0" * 1000)
 
     @unittest.skipIf(_testcapi is None, "requires _testcapi")
     def test_c_owned_buffer_immutable_view(self):
         value = b"test"
         view = _testcapi.testSimpleImmutableView(value)
-        self.assertEqual(view.__bytes__(), value)
+        self.assertEqual(bytes(view), value)
 
     @unittest.skipIf(_testcapi is None, "requires _testcapi")
     def test_c_owned_buffer_exclusive_view(self):
@@ -4638,7 +4638,7 @@ class TestPythonBufferProtocol(unittest.TestCase):
         payload = b"hello"
         for idx, c in enumerate(payload):
             view[idx] = c
-        self.assertEqual(view.__bytes__()[:len(payload)], payload)
+        self.assertEqual(bytes(view)[:len(payload)], payload)
 
     @unittest.skipIf(_testcapi is None, "requires _testcapi")
     def test_c_owned_buffer_exclusive_conflicting_view(self):
@@ -4653,7 +4653,7 @@ class TestPythonBufferProtocol(unittest.TestCase):
         view1[0] = ord("a")
         del view1
         view2 = _testcapi.testSimpleImmutableView(buf)
-        self.assertEqual(view2.__bytes__(), b"a" + b"\0" * 999)
+        self.assertEqual(bytes(view2), b"a" + b"\0" * 999)
 
     @unittest.skipIf(_testcapi is None, "requires _testcapi")
     def test_c_owned_buffer_exclusive_bytes_fails(self):
