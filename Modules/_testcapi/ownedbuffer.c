@@ -63,13 +63,13 @@ testownedbuf_getbuffer(testOwnedBufObject *self, Py_buffer *view, int flags)
 
     if (self->exclusively_exported) {
         PyErr_SetString(PyExc_BufferError,
-                        "Buffer is already exclusively exported.");
+                        "buffer is already exclusively exported.");
         return -1;
     }
 
     if (flags & PyBUF_EXCLUSIVE && self->immutable_references > 0) {
         PyErr_SetString(PyExc_BufferError,
-                        "Buffer has immutable exports and cannot be exclusively exported.");
+                        "buffer has immutable exports and cannot be exclusively exported.");
         return -1;
     }
 
