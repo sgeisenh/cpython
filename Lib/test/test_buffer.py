@@ -4611,7 +4611,7 @@ class TestPythonBufferProtocol(unittest.TestCase):
             self.assertFalse(m.readonly)
         self.assertRaises(BufferError, _testcapi.buffer_fill_info,
                           source, 1, PyBUF_WRITABLE)
-        
+
     @unittest.skipIf(_testcapi is None, "requires _testcapi")
     def test_c_owned_buffer_memoryview(self):
         buf = _testcapi.testOwnedBuf()
