@@ -294,19 +294,20 @@ _PyTestCapi_Init_OwnedBuffer(PyObject *m) {
     if (PyModule_AddObjectRef(m, "testOwnedBuf", (PyObject *)&testOwnedBufType)) {
         return -1;
     }
-    // TODO: Move this to a separate function.
+
     if (PyType_Ready(&testSimpleImmutableViewType) < 0) {
         return -1;
     }
     if (PyModule_AddObjectRef(m, "testSimpleImmutableView", (PyObject *)&testSimpleImmutableViewType)) {
         return -1;
     }
-    // TODO: This too.
+
     if (PyType_Ready(&testSimpleMutableViewType) < 0) {
         return -1;
     }
     if (PyModule_AddObjectRef(m, "testSimpleMutableView", (PyObject *)&testSimpleMutableViewType)) {
         return -1;
     }
+
     return 0;
 }
