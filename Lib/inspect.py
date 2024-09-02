@@ -3248,6 +3248,10 @@ class BufferFlags(enum.IntFlag):
     READ = 0x100
     WRITE = 0x200
 
+    OPT_OUT = FULL | READ | WRITE | C_CONTIGUOUS | F_CONTIGUOUS | ANY_CONTIGUOUS
+
+    IMMUTABLE = 0x400
+    EXCLUSIVE = 0x800
 
 def _main():
     """ Logic for inspecting an object given at command line """

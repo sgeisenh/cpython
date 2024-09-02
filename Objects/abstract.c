@@ -439,6 +439,18 @@ PyObject_GetBuffer(PyObject *obj, Py_buffer *view, int flags)
                      Py_TYPE(obj)->tp_name);
         return -1;
     }
+
+    uint32_t potential_flags = pb->potential_pybuf_flags;
+    if (potential_flags == 0) {
+        potential_flags = PyBUF_OPT_OUT;
+    }
+    int unsupported_flags = flags & ~potential_flags;
+    if (unsupported_flags) {
+        PyErr_Format(PyExc_BufferError,
+                     "attempting to get buffer with unsupported flags: %x", unsupported_flags);
+        return -1;
+    }
+
     int res = (*pb->bf_getbuffer)(obj, view, flags);
     assert(_Py_CheckSlotResult(obj, "getbuffer", res >= 0));
     return res;

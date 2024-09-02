@@ -8474,6 +8474,12 @@ PyType_Ready(PyTypeObject *type)
         _Py_SetImmortalUntracked((PyObject *)type);
     }
 
+    /* Prior to the introduction of immutable and exclusive buffer exports,
+    you could request a buffer using any flags. */
+    if (type->tp_as_buffer && type->tp_as_buffer->potential_pybuf_flags == 0) {
+        type->tp_as_buffer->potential_pybuf_flags = PyBUF_OPT_OUT;
+    }
+
     int res;
     BEGIN_TYPE_LOCK();
     if (!(type->tp_flags & Py_TPFLAGS_READY)) {

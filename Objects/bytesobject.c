@@ -1696,6 +1696,7 @@ static PyMappingMethods bytes_as_mapping = {
 static PyBufferProcs bytes_as_buffer = {
     (getbufferproc)bytes_buffer_getbuffer,
     NULL,
+    PyBUF_OPT_OUT | PyBUF_IMMUTABLE,
 };
 
 

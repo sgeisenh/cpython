@@ -60,5 +60,6 @@ int _PyTestCapi_Init_Hash(PyObject *module);
 int _PyTestCapi_Init_Time(PyObject *module);
 int _PyTestCapi_Init_Monitoring(PyObject *module);
 int _PyTestCapi_Init_Object(PyObject *module);
+int _PyTestCapi_Init_OwnedBuffer(PyObject *module);
 
 #endif // Py_TESTCAPI_PARTS_H
